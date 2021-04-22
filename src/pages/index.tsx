@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { PlayerContext } from "../contexts/PlayerContext";
 import ptBR from "date-fns/locale/pt-BR";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,6 +28,8 @@ type HomeProps = {
 }
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
+  const { play } = useContext(PlayerContext);
+
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
@@ -50,7 +54,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   <span> {episode.publishedAt} </span>
                   <span> {episode.durationAsString} </span>
                 </div>
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                   <img src="/play-green.svg" alt="Reproduzir episódio" />
                 </button>
               </li>
@@ -124,7 +128,7 @@ export const getStaticProps: GetStaticProps = async () => {
       title: episode.title,
       thumbnail: episode.thumbnail,
       members: episode.members,
-      publideshedAt: format(parseISO(episode.published_at), 'd MMM yy', { locale: ptBR }),
+      publishedAt: format(parseISO(episode.published_at), 'd MMM yy', { locale: ptBR }),
       duration: Number(episode.file.duration),
       durationAsString: convertDurationToTimeString(Number(episode.file.duration)),
       description: episode.description,
